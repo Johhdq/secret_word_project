@@ -19,6 +19,8 @@ const stages = [
 ];
 
 function App() {
+  const guessesQuantity = 5;
+
   const [gameStage, setGameStage] = useState(stages[0].name);
   const [words] = useState(wordsList);
 
@@ -30,7 +32,7 @@ function App() {
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
   const [guesses, setGuesses] = useState(3);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState();
 
   const pickWordAndCategory = () => {
     // Pick a random category
@@ -69,24 +71,51 @@ function App() {
 
   // process the letter input
   const verifyLetter = (letter) => {
-    letters.includes(letter)
-      ? !guessedLetters.includes(letter) && guessedLetters.push(letter)
-      : !wrongLetters.includes(letter) && wrongLetters.push(letter);
+    // O usuário não pode perder as tentativas se ele digitar palvras já escolhidas
+    if (guessedLetters.includes(letter) || wrongLetters.includes(letter)) {
+      return;
+    }
 
-    setGuesses((prevGuesses) => {
-      return prevGuesses - 1;
-    });
+    if (letters.includes(letter)) {
+      setGuessedLetters((prevGuessedLetters) => [
+        // Pega todos os elementos atuais do array e une com um novo
+        ...prevGuessedLetters,
+        letter,
+      ]);
+    } else {
+      setWrongLetters((prevWrongLetters) => [...prevWrongLetters, letter]);
+
+      setGuesses((prevGuesses) => {
+        return prevGuesses - 1;
+      });
+    }
+
     console.log(guesses);
-
     console.log(letters);
     console.log(guessedLetters);
     console.log(wrongLetters);
-
     console.log(letter);
   };
 
+  const clearLetterStates = () => {
+    setGuessedLetters([]);
+    setWrongLetters([]);
+  };
+
+  // O UseEffect monitora algum dado que a gente escolhe e realiza uma função toda
+  // vez que esse dado é alterado, o [] que ele recebe é o dado que eu quero monitorar
+  useEffect(() => {
+    if (guesses === 0) {
+      // reset all states
+      clearLetterStates();
+      setGameStage(stages[2].name);
+    }
+  }, [guesses]);
+
   // restarts the game
   const retry = () => {
+    setScore(0);
+    setGuesses(guessesQuantity);
     setGameStage(stages[0].name);
   };
 
@@ -105,7 +134,7 @@ function App() {
           guesses={guesses}
         />
       )}
-      {gameStage === "end" && <GameOver retry={retry} />}
+      {gameStage === "end" && <GameOver retry={retry} score={score} />}
     </div>
   );
 }
