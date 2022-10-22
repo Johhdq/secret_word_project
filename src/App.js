@@ -28,7 +28,7 @@ function App() {
   const [letters, setLetters] = useState([]);
 
   const [guessedLetters, setGuessedLetters] = useState([]);
-  const [wrongLetters, setWrongLetters] = useState(["a", "b"]);
+  const [wrongLetters, setWrongLetters] = useState([]);
   const [guesses, setGuesses] = useState(3);
   const [score, setScore] = useState(0);
 
@@ -68,8 +68,21 @@ function App() {
   };
 
   // process the letter input
-  const verifyLetter = () => {
-    setGameStage(stages[2].name);
+  const verifyLetter = (letter) => {
+    letters.includes(letter)
+      ? !guessedLetters.includes(letter) && guessedLetters.push(letter)
+      : !wrongLetters.includes(letter) && wrongLetters.push(letter);
+
+    setGuesses((prevGuesses) => {
+      return prevGuesses - 1;
+    });
+    console.log(guesses);
+
+    console.log(letters);
+    console.log(guessedLetters);
+    console.log(wrongLetters);
+
+    console.log(letter);
   };
 
   // restarts the game
