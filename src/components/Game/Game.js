@@ -9,6 +9,7 @@ const Game = ({
   guessedLetters,
   wrongLetters,
   guesses,
+  normalizeFunction
 }) => {
   const [letter, setLetter] = useState("");
 
@@ -22,7 +23,7 @@ const Game = ({
 
     const letterResult = letter.replace(/[^a-zA-Z\u00C0-\u00FF]+/, "");
     if (letterResult !== "") {
-      verifyLetter(letterResult.toLowerCase());
+      verifyLetter(normalizeFunction(letterResult.toLowerCase()));
       setLetter("");
 
     } else {
@@ -43,7 +44,7 @@ const Game = ({
       <div className="wordContainer">
         {letters.map((letter, i) =>
           // o includes determina se o array tem determinado elemento
-          guessedLetters.includes(letter) ? (
+          guessedLetters.includes(normalizeFunction(letter)) ? (
             <span key={i} className="letter">
               {letter}
             </span>

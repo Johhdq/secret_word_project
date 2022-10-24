@@ -33,6 +33,7 @@ function App() {
   const [wrongLetters, setWrongLetters] = useState([]);
   const [guesses, setGuesses] = useState(3);
   const [score, setScore] = useState(0);
+  const [normalizedLetters, setNormalizedLetters] = useState([]);
 
   const pickWordAndCategory = useCallback(() => {
     // Pick a random category
@@ -41,11 +42,14 @@ function App() {
 
     // Pick a random word
     const wordsCategory = words[category];
-    const word =
-      wordsCategory[Math.floor(Math.random() * wordsCategory.length)];
+    const word = wordsCategory[Math.floor(Math.random() * wordsCategory.length)];
 
     return { word, category };
   }, [words]);
+
+  const normalize = (word) => {
+    return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  };
 
   // starts the secret word game
   const startGame = useCallback(() => {
@@ -53,6 +57,14 @@ function App() {
     // pick word and pick category
     // Estou desestruturando o retorno do método!
     const { word, category } = pickWordAndCategory();
+
+    const normalizedWord = normalize(word);
+    let normalizedWordLetters = normalizedWord.split("");
+    normalizedWordLetters = normalizedWordLetters.map((letter) => letter.toLowerCase());
+
+    console.log("Aquii");
+    console.log(normalizedWordLetters);
+    setNormalizedLetters(normalizedWordLetters);
 
     // Create an array of letters
     // Separando a palavra em letras, em uma lista
@@ -71,10 +83,11 @@ function App() {
   const verifyLetter = (letter) => {
     // O usuário não pode perder as tentativas se ele digitar palvras já escolhidas
     if (guessedLetters.includes(letter) || wrongLetters.includes(letter)) {
+      console.log("error");
       return;
     }
 
-    if (letters.includes(letter)) {
+    if (normalizedLetters.includes(letter)) {
       setGuessedLetters((prevGuessedLetters) => [
         // Pega todos os elementos atuais do array e une com um novo
         ...prevGuessedLetters,
@@ -90,6 +103,7 @@ function App() {
   };
 
   const clearLetterStates = () => {
+    setNormalizedLetters([]);
     setGuessedLetters([]);
     setWrongLetters([]);
   };
@@ -108,7 +122,7 @@ function App() {
   // check win condition
   useEffect(() => {
     // o Set vai gerar apenas valores não repetidos no array
-    const uniqueLetters = [...new Set(letters)];
+    const uniqueLetters = [...new Set(normalizedLetters)];
 
     if (guessedLetters.length === uniqueLetters.length) {
       // add score
@@ -117,9 +131,12 @@ function App() {
       });
 
       // restart game
-      startGame();
+      setTimeout(() => {
+        startGame();
+        setGuesses(guessesQuantity);
+      }, 800)
     }
-  }, [guessedLetters, letters, startGame]);
+  }, [guessedLetters, letters, startGame, normalizedLetters]);
 
   // restarts the game
   const retry = () => {
@@ -140,6 +157,7 @@ function App() {
           guessedLetters={guessedLetters}
           wrongLetters={wrongLetters}
           guesses={guesses}
+          normalizeFunction={normalize}
         />
       )}
       {gameStage === "end" && (
