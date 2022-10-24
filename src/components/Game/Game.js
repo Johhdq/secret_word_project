@@ -17,6 +17,7 @@ const Game = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    // Vai focar no elemento ao fim do submit
     letterInputRef.current.focus();
 
     const letterResult = letter.replace(/[^a-zA-Z\u00C0-\u00FF]+/, "");
@@ -24,7 +25,6 @@ const Game = ({
       verifyLetter(letterResult.toLowerCase());
       setLetter("");
 
-      // Vai focar no elemento ao fim do submit
     } else {
       alert("Insira apenas LETRAS!");
     }
