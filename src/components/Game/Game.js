@@ -18,12 +18,18 @@ const Game = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    verifyLetter(letter.toLowerCase());
-    setLetter("");
-
-    // Vai focar no elemento ao fim do submit
     letterInputRef.current.focus();
+
+    const letterResult = letter.replace(/[^a-z]/gi, "");
+    if (letterResult !== "") {
+      console.log("Entrou!");
+      verifyLetter(letterResult.toLowerCase());
+      setLetter("");
+
+      // Vai focar no elemento ao fim do submit
+    } else {
+      alert("Insira apenas LETRAS!");
+    }
   };
 
   return (

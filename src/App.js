@@ -6,7 +6,7 @@ import Game from "./components/Game/Game";
 import GameOver from "./components/GameOver/GameOver";
 
 // react
-import { userCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // data
 import { wordsList } from "./data/words";
@@ -32,9 +32,9 @@ function App() {
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
   const [guesses, setGuesses] = useState(3);
-  const [score, setScore] = useState();
+  const [score, setScore] = useState(0);
 
-  const pickWordAndCategory = () => {
+  const pickWordAndCategory = useCallback(() => {
     // Pick a random category
     const categories = Object.keys(words);
     const category = categories[Math.floor(Math.random() * categories.length)];
@@ -45,10 +45,11 @@ function App() {
       wordsCategory[Math.floor(Math.random() * wordsCategory.length)];
 
     return { word, category };
-  };
+  }, [words]);
 
   // starts the secret word game
-  const startGame = () => {
+  const startGame = useCallback(() => {
+    clearLetterStates();
     // pick word and pick category
     // Estou desestruturando o retorno do método!
     const { word, category } = pickWordAndCategory();
@@ -67,7 +68,7 @@ function App() {
 
     console.log(`Category: ${pickedCategory};\nWord: ${pickedWord} `);
     console.log(letters);
-  };
+  }, [pickWordAndCategory, letters, pickedCategory, pickedWord]);
 
   // process the letter input
   const verifyLetter = (letter) => {
@@ -104,6 +105,7 @@ function App() {
 
   // O UseEffect monitora algum dado que a gente escolhe e realiza uma função toda
   // vez que esse dado é alterado, o [] que ele recebe é o dado que eu quero monitorar
+  // check if guesses ended
   useEffect(() => {
     if (guesses === 0) {
       // reset all states
@@ -111,6 +113,22 @@ function App() {
       setGameStage(stages[2].name);
     }
   }, [guesses]);
+
+  // check win condition
+  useEffect(() => {
+    // o Set vai gerar apenas valores não repetidos no array
+    const uniqueLetters = [...new Set(letters)];
+
+    if (guessedLetters.length === uniqueLetters.length) {
+      // add score
+      setScore((prevScore) => {
+        return prevScore += 100;
+      });
+
+      // restart game
+      startGame();
+    }
+  }, [guessedLetters, letters, startGame]);
 
   // restarts the game
   const retry = () => {
