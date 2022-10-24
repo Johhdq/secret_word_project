@@ -8,6 +8,7 @@
 
 .tip span {
     color: yellow;
+    text-transform: uppercase;
 }
 
 .wordContainer {

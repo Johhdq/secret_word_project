@@ -1,4 +1,16 @@
-
 .score span {
     color: yellow
+}
+
+.correctWord strong {
+    color: yellow;
+    text-transform: uppercase;
+}
+
+.correctWord {
+    display: block;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
 }

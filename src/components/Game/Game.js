@@ -4,7 +4,6 @@ import "./styles.css";
 const Game = ({
   verifyLetter,
   category,
-  word,
   letters,
   score,
   guessedLetters,
@@ -20,9 +19,8 @@ const Game = ({
     event.preventDefault();
     letterInputRef.current.focus();
 
-    const letterResult = letter.replace(/[^a-z]/gi, "");
+    const letterResult = letter.replace(/[^a-zA-Z\u00C0-\u00FF]+/, "");
     if (letterResult !== "") {
-      console.log("Entrou!");
       verifyLetter(letterResult.toLowerCase());
       setLetter("");
 

@@ -65,10 +65,7 @@ function App() {
     setLetters(wordLetters);
 
     setGameStage(stages[1].name);
-
-    console.log(`Category: ${pickedCategory};\nWord: ${pickedWord} `);
-    console.log(letters);
-  }, [pickWordAndCategory, letters, pickedCategory, pickedWord]);
+  }, [pickWordAndCategory]);
 
   // process the letter input
   const verifyLetter = (letter) => {
@@ -90,12 +87,6 @@ function App() {
         return prevGuesses - 1;
       });
     }
-
-    console.log(guesses);
-    console.log(letters);
-    console.log(guessedLetters);
-    console.log(wrongLetters);
-    console.log(letter);
   };
 
   const clearLetterStates = () => {
@@ -122,7 +113,7 @@ function App() {
     if (guessedLetters.length === uniqueLetters.length) {
       // add score
       setScore((prevScore) => {
-        return prevScore += 100;
+        return (prevScore += 100);
       });
 
       // restart game
@@ -144,7 +135,6 @@ function App() {
         <Game
           verifyLetter={verifyLetter}
           category={pickedCategory}
-          word={pickedWord}
           letters={letters}
           score={score}
           guessedLetters={guessedLetters}
@@ -152,7 +142,9 @@ function App() {
           guesses={guesses}
         />
       )}
-      {gameStage === "end" && <GameOver retry={retry} score={score} />}
+      {gameStage === "end" && (
+        <GameOver retry={retry} score={score} correctWord={pickedWord} />
+      )}
     </div>
   );
 }
