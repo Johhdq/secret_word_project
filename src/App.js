@@ -42,7 +42,8 @@ function App() {
 
     // Pick a random word
     const wordsCategory = words[category];
-    const word = wordsCategory[Math.floor(Math.random() * wordsCategory.length)];
+    const word =
+      wordsCategory[Math.floor(Math.random() * wordsCategory.length)];
 
     return { word, category };
   }, [words]);
@@ -60,7 +61,9 @@ function App() {
 
     const normalizedWord = normalize(word);
     let normalizedWordLetters = normalizedWord.split("");
-    normalizedWordLetters = normalizedWordLetters.map((letter) => letter.toLowerCase());
+    normalizedWordLetters = normalizedWordLetters.map((letter) =>
+      letter.toLowerCase()
+    );
 
     console.log("Aquii");
     console.log(normalizedWordLetters);
@@ -124,8 +127,16 @@ function App() {
     // o Set vai gerar apenas valores não repetidos no array
     const uniqueLetters = [...new Set(normalizedLetters)];
 
-    if (guessedLetters.length === uniqueLetters.length) {
+    if (
+      guessedLetters.length > 0 &&
+      uniqueLetters.length > 0 &&
+      guessedLetters.length === uniqueLetters.length
+    ) {
+      console.log(guessedLetters.length);
+      console.log(uniqueLetters.length);
+
       // add score
+      console.log("Entrou porra!");
       setScore((prevScore) => {
         return (prevScore += 100);
       });
@@ -134,7 +145,7 @@ function App() {
       setTimeout(() => {
         startGame();
         setGuesses(guessesQuantity);
-      }, 800)
+      }, 800);
     }
   }, [guessedLetters, letters, startGame, normalizedLetters]);
 
